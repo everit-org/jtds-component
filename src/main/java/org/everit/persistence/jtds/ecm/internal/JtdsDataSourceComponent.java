@@ -26,6 +26,8 @@ import org.everit.osgi.ecm.annotation.Activate;
 import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.ConfigurationPolicy;
 import org.everit.osgi.ecm.annotation.Deactivate;
+import org.everit.osgi.ecm.annotation.ManualService;
+import org.everit.osgi.ecm.annotation.ManualServices;
 import org.everit.osgi.ecm.annotation.attribute.BooleanAttribute;
 import org.everit.osgi.ecm.annotation.attribute.IntegerAttribute;
 import org.everit.osgi.ecm.annotation.attribute.IntegerAttributeOption;
@@ -34,28 +36,28 @@ import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributeOption;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.component.ComponentContext;
-import org.everit.osgi.ecm.extender.ECMExtenderConstants;
+import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.everit.persistence.jtds.ecm.JtdsDataSourceComponentConstants;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 
 /**
  * Configurable component that registers {@link JtdsDataSource} as an OSGi service.
  */
+@ExtendComponent
 @Component(componentId = JtdsDataSourceComponentConstants.SERVICE_FACTORY_PID,
     configurationPolicy = ConfigurationPolicy.FACTORY, label = "Everit jTDS DataSource",
     description = "Configurable component that instantiates JtdsDataSource and registers it as an "
         + "OSGi service based on DataSource, XADataSource and PoolingDataSource interfaces.")
-@ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
-    value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION, optional = true,
         label = "Service Description",
         description = "The description of this component configuration. It is used to easily "
             + "identify the service registered by this component.") })
+@ManualServices(@ManualService({ DataSource.class, XADataSource.class,
+    ConnectionPoolDataSource.class, JtdsDataSource.class }))
 public class JtdsDataSourceComponent {
 
   private String appName;
